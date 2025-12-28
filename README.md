@@ -4,70 +4,94 @@
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-## How can I edit this code?
+# Real Assets Exchange
 
-There are several ways of editing your application.
+Real Assets Exchange is a front-end reference application for a tokenized real-asset marketplace. It demonstrates a modern React + TypeScript + Vite UI with components for discovering, trading, and managing liquidity for on-chain representations of physical assets.
 
-**Use Lovable**
+**Quick Summary**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Product:** A UI prototype for listing, trading, and managing tokenized real-world assets.
+- **Focus:** Marketplace, trading, lending, liquidity management, and analytics dashboards.
+- **Audience:** Front-end developers, product designers, and blockchain teams evaluating UX patterns for asset-backed marketplaces.
 
-Changes made via Lovable will be committed automatically to this repo.
+**Key Features**
 
-**Use your preferred IDE**
+- **Marketplace:** Browse asset listings and view asset details.
+- **Trading:** Order entry and trading flows (UI-only or connected to backend integrations).
+- **Liquidity & Lending:** Pages to add/remove liquidity and view lending markets.
+- **Dashboard & Analytics:** User dashboard, portfolio view, and analytics charts.
+- **Wallet Integration:** `WalletContext` for connecting a wallet and managing session state.
+- **Component Library:** shadcn + Radix UI powered components and Tailwind CSS utilities.
+- **Mock Data:** Local mock data for quickly previewing UI flows (`src/data/mockData.ts`).
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Pages (in `src/pages`)**
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- `Landing` : Marketing / home page
+- `Marketplace` : Asset discovery and listings
+- `Trade` : Trading interface
+- `Liquidity` : Liquidity pools and management
+- `Lending` : Lending markets overview
+- `Dashboard` : User portfolio and actions
+- `Analytics` : Charts and metrics
+- `Profile` : User account and settings
+- `NotFound` : 404 page
 
-Follow these steps:
+**Tech Stack**
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **Framework:** Vite + React + TypeScript
+- **Styling:** Tailwind CSS (+ tailwindcss-animate)
+- **UI primitives:** Radix UI + shadcn components
+- **State & Data:** React context, `@tanstack/react-query` (present in deps)
+- **Charts & UI libs:** Recharts, framer-motion, lucide-react
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Installation & Local Development
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. Install dependencies:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
+```
+
+2. Start local dev server:
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Available scripts (from `package.json`):
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- `dev`: Start Vite dev server
+- `build`: Build production assets
+- `build:dev`: Build with development mode
+- `preview`: Serve built assets locally
+- `lint`: Run ESLint
 
-**Use GitHub Codespaces**
+Development Notes
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- UI is component-driven under `src/components` with a `ui/` subfolder containing many reusable primitives.
+- Wallet context lives in `src/contexts/WalletContext.tsx` and is the recommended integration point for wallet providers.
+- Mock data and simple utils are in `src/data` and `src/lib/utils.ts` for quick prototyping without a backend.
 
-## What technologies are used for this project?
+Contributing
 
-This project is built with:
+- Open issues or PRs for improvements.
+- Keep changes focused and follow existing code style.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+License
 
-## How can I deploy this project?
+- Add a license file or update this README with the appropriate license for your project.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Where to look next
 
-## Can I connect a custom domain to my Lovable project?
+- UI entry: `src/main.tsx`
+- Layout components: `src/components/layout`
+- Mock data: `src/data/mockData.ts`
 
-Yes, you can!
+If you want, I can also:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- Add a short demo GIF or screenshots to this README
+- Add a CONTRIBUTING.md and CODE_OF_CONDUCT
+- Wire up a basic backend mock or API contract
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+Updated to reflect the project's purpose and developer setup.

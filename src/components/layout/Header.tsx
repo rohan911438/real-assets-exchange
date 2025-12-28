@@ -9,9 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Wallet, ChevronDown, User, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Wallet, ChevronDown, User, Settings, LogOut, Menu, X, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
   { name: 'Dashboard', path: '/dashboard' },
@@ -26,17 +27,37 @@ export const Header = () => {
   const { isConnected, address, connect, disconnect } = useWallet();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyAddress = async () => {
+    if (address) {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="container mx-auto px-4">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/30">
+      {/* Glassmorphic background */}
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
+      
+      <div className="container mx-auto px-4 relative">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-purple-500">
-              <span className="text-lg font-bold text-primary-foreground">R</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">RWA-DEX</span>
+          <Link to="/" className="flex items-center gap-3 group">
+            <motion.div 
+              className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light shadow-lg group-hover:shadow-glow-sm transition-shadow duration-300"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ duration: 0.2 }}
+            >
+              <span className="text-lg font-bold text-white font-display">R</span>
+              {/* Glow effect */}
+              <div className="absolute inset-0 rounded-xl bg-primary/50 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
+            </motion.div>
+            <span className="text-xl font-bold text-foreground font-display tracking-tight">
+              RWA-<span className="gradient-text">DEX</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -47,7 +68,7 @@ export const Header = () => {
                   key={link.path}
                   to={link.path}
                   className={cn(
-                    'nav-link',
+                    'nav-link text-sm font-medium',
                     location.pathname === link.path && 'active'
                   )}
                 >
@@ -60,45 +81,82 @@ export const Header = () => {
           {/* Right Side */}
           <div className="flex items-center gap-3">
             {isConnected && (
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary/50 border border-border/50">
-                <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
-                <span className="text-xs text-muted-foreground">Mantle Testnet</span>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/20"
+              >
+                <div className="h-2 w-2 rounded-full bg-success animate-pulse shadow-success-glow" />
+                <span className="text-xs font-medium text-success">Mantle Testnet</span>
+              </motion.div>
             )}
 
             {isConnected ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
-                    <Wallet className="h-4 w-4" />
-                    <span className="hidden sm:inline">{truncateAddress(address!)}</span>
-                    <ChevronDown className="h-4 w-4" />
+                  <Button 
+                    variant="outline" 
+                    className="gap-2 rounded-xl border-border/50 bg-secondary/50 backdrop-blur-sm hover:bg-secondary/80 hover:border-primary/30"
+                  >
+                    <div className="h-6 w-6 rounded-lg bg-gradient-to-br from-primary to-primary-light flex items-center justify-center">
+                      <Wallet className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <span className="hidden sm:inline font-mono text-sm">{truncateAddress(address!)}</span>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      View Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="flex items-center gap-2">
-                      <Settings className="h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={disconnect} className="text-destructive">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Disconnect
-                  </DropdownMenuItem>
+                <DropdownMenuContent 
+                  align="end" 
+                  className="w-56 rounded-xl border-border/50 bg-card/95 backdrop-blur-xl shadow-elevated"
+                >
+                  <div className="px-3 py-2 border-b border-border/30">
+                    <p className="text-xs text-muted-foreground mb-1">Connected Wallet</p>
+                    <button 
+                      onClick={handleCopyAddress}
+                      className="flex items-center gap-2 text-sm font-mono text-foreground hover:text-primary transition-colors"
+                    >
+                      {truncateAddress(address!)}
+                      {copied ? (
+                        <Check className="h-3.5 w-3.5 text-success" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
+                  <div className="py-1">
+                    <DropdownMenuItem asChild className="rounded-lg mx-1 cursor-pointer">
+                      <Link to="/profile" className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        View Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="rounded-lg mx-1 cursor-pointer">
+                      <Link to="/profile" className="flex items-center gap-2">
+                        <Settings className="h-4 w-4" />
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                  </div>
+                  <DropdownMenuSeparator className="bg-border/30" />
+                  <div className="py-1">
+                    <DropdownMenuItem 
+                      onClick={disconnect} 
+                      className="text-destructive rounded-lg mx-1 cursor-pointer hover:bg-destructive/10"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Disconnect
+                    </DropdownMenuItem>
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={connect} variant="gradient" className="gap-2">
+              <Button 
+                onClick={connect} 
+                variant="gradient" 
+                className="gap-2 rounded-xl shadow-glow-sm hover:shadow-glow transition-shadow duration-300"
+              >
                 <Wallet className="h-4 w-4" />
-                Connect Wallet
+                <span className="hidden sm:inline">Connect Wallet</span>
               </Button>
             )}
 
@@ -107,7 +165,7 @@ export const Header = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden"
+                className="md:hidden rounded-xl"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -117,27 +175,41 @@ export const Header = () => {
         </div>
 
         {/* Mobile Navigation */}
-        {isConnected && mobileMenuOpen && (
-          <nav className="md:hidden py-4 border-t border-border/50 animate-fade-in">
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    'px-4 py-3 rounded-lg transition-colors',
-                    location.pathname === link.path
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-muted-foreground hover:bg-secondary'
-                  )}
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-          </nav>
-        )}
+        <AnimatePresence>
+          {isConnected && mobileMenuOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="md:hidden py-4 border-t border-border/30 overflow-hidden"
+            >
+              <div className="flex flex-col gap-1">
+                {navLinks.map((link, index) => (
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <Link
+                      to={link.path}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        'flex items-center px-4 py-3 rounded-xl transition-all duration-200',
+                        location.pathname === link.path
+                          ? 'bg-primary/10 text-primary border border-primary/20'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                      )}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

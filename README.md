@@ -163,3 +163,27 @@ Updated to reflect the project's purpose and developer setup.
 		- `OwnershipTransferred` from zero address to 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
 		- `Transfer` mint from zero address to 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (initial supply minted)
 	- **Verification / network:** Deployed on a local/test VM (block 1). No public explorer verification recorded. If this was deployed to a public network, tell me which one and I will add explorer links and verification URLs (Sourcify/Etherscan) where available.
+
+- **LendingProtocol**
+	- **Contract address:** 0x653EE2ea054252c71878e4F382A5810C199F0285
+	- **Transaction:** 0xc1150a9a97d7b57478ff0044cb6caadd1a353c9720b4e9e3c42f266c96015097 (block 32766440)
+	- **Block hash:** 0x62ea187065e493bc722a465cc4ce571e8f0f1c296391097e8a21dd8079f28a14
+	- **Block number:** 32766440
+	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
+	- **Constructor inputs:**
+		- `_borrowToken`: 0xd9145CCE52D386f254917e481eB44e9943F39138
+		- `_priceOracle`: 0x2aB068440E8D2006B9bA2f2995932Cb4fC33e21C
+	- **Transaction cost:** 9262983249 gas
+	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
+	- **Events on deployment:** `OwnershipTransferred` from zero address to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
+	- **Notes:** Explorer links omitted until target network/explorer is specified. Tell me the network and I will add direct Etherscan/Blockscout links and the Sourcify URL.
+
+- **RWAFactory**
+	- **Contract address:** 0x2DdE400Dca7d02F337f6f21124C0Bf108096DD1c
+	- **Transaction:** 0x5e38a3db4e7b1e983b26a7ed5af56832b3544b15b0cb5411de0ea2e415286475 (block 32766550)
+	- **Block number:** 32766550
+	- **Transaction index:** 1
+	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
+	- **Network:** Mantle Sepolia Testnet (chainId: 5003)
+	- **Verification:** Sourcify — Verified (Exact Match). Verified at 2025-12-30 06:56:32 UTC. Compilation target: `contracts/RWAFactory.sol:RWAFactory` (solc 0.8.31+commit.fd3a2265, EVM version: default).
+	- **Notes:** Etherscan verification skipped (API key not provided). Blockscout indexing timed out. If you want, I can add direct Mantle Sepolia explorer links and the Sourcify view URL — tell me whether to include the Sourcify link or other explorer links.

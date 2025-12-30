@@ -140,3 +140,26 @@ Updated to reflect the project's purpose and developer setup.
 	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
 	- **Events on deployment:** `OwnershipTransferred` from zero address to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
 	- **Notes:** Explorer links omitted until network/explorer is specified; tell me the network and I will add direct explorer links and the Sourcify URL.
+
+- **RWAToken**
+	- **Contract address:** 0xd9145CCE52D386f254917e481eB44e9943F39138
+	- **Transaction:** 0xc00581e9e875d2a6c97cf93243506c7b240ee82d9b75c10e0c10ba5e20618c39 (block 1)
+	- **Block hash:** 0x0a569f72e31c55a378df19fd6a2d5084c9c10072322d206ce8877d20323c57c3
+	- **Block number:** 1
+	- **Deployer:** 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+	- **Constructor inputs:**
+		- `name`: "RWA Real Estate Bond"
+		- `symbol`: "USD"
+		- `totalSupply`: 1000000000000000000000000
+		- `_assetType`: 1
+		- `_totalAssetValue`: 10000000
+		- `_yieldRate`: 600
+		- `_maturityDate`: 1830297600
+		- `_jurisdiction`: "Singapore"
+		- `_complianceRegistry`: 0xC71835dC515baD2464E62377E82D8391F891b91D
+		- `_complianceRequired`: true
+	- **Transaction cost:** 2607945 gas (execution cost 2339751)
+	- **Events on deployment:**
+		- `OwnershipTransferred` from zero address to 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+		- `Transfer` mint from zero address to 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (initial supply minted)
+	- **Verification / network:** Deployed on a local/test VM (block 1). No public explorer verification recorded. If this was deployed to a public network, tell me which one and I will add explorer links and verification URLs (Sourcify/Etherscan) where available.

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWA DEX SDK Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #333;
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            color: #666;
+            margin: 10px 0 0 0;
+        }
+        .wallet-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .wallet-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .status-indicator {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-wrong-network {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        .card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏦 RWA DEX SDK Demo</h1>
+            <p>Experience Real-World Asset trading on Mantle Sepolia</p>
+        </div>
+
+        <div class="wallet-section">
+            <div class="wallet-status">
+                <h3>🔗 Wallet Connection</h3>
+                <div id="walletStatus" class="status-indicator status-disconnected">
+                    Disconnected
+                </div>
+            </div>
+            
+            <div class="info-grid">
+                <div>
+                    <div class="info-item">
+                        <span class="info-label">Address:</span>
+                        <span id="walletAddress" class="info-value">Not connected</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Network:</span>
+                        <span id="networkInfo" class="info-value">Unknown</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="info-item">
+                        <span class="info-label">Balance:</span>
+                        <span id="walletBalance" class="info-value">0 MNT</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Chain ID:</span>
+                        <span id="chainId" class="info-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button id="connectBtn" class="btn">Connect MetaMask</button>
+                <button id="disconnectBtn" class="btn" style="display: none;">Disconnect</button>
+                <button id="switchNetworkBtn" class="btn btn-warning" style="display: none;">Switch to Mantle Sepolia</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📊 Asset Information</h3>
+            <div id="assetInfo">
+                <p>Connect your wallet to view asset information.</p>
+            </div>
+            <button id="loadAssetsBtn" class="btn" disabled>Load Assets</button>
+        </div>
+
+        <div class="card">
+            <h3>💱 Trading Demo</h3>
+            <div class="input-group">
+                <label>Token In Address:</label>
+                <input type="text" id="tokenIn" placeholder="0x..." />
+            </div>
+            <div class="input-group">
+                <label>Token Out Address:</label>
+                <input type="text" id="tokenOut" placeholder="0x..." />
+            </div>
+            <div class="input-group">
+                <label>Amount:</label>
+                <input type="text" id="swapAmount" placeholder="1.0" />
+            </div>
+            <button id="previewSwapBtn" class="btn" disabled>Preview Swap</button>
+            <div id="swapPreview"></div>
+        </div>
+
+        <div class="card">
+            <h3>🏛️ Compliance Check</h3>
+            <div class="input-group">
+                <label>Check Address:</label>
+                <input type="text" id="complianceAddress" placeholder="0x..." />
+            </div>
+            <button id="checkComplianceBtn" class="btn" disabled>Check Compliance</button>
+            <div id="complianceResult"></div>
+        </div>
+
+        <div id="messages"></div>
+
+        <div class="footer">
+            <p>Built with RWA DEX SDK v1.0.0 • Powered by Mantle Network</p>
+        </div>
+    </div>
+
+    <!-- Include the SDK (in a real app, you'd import from npm) -->
+    <script type="module">
+        // Mock SDK for demo purposes - replace with actual import
+        class MockRWADex {
+            constructor() {
+                this.walletState = {
+                    isConnected: false,
+                    isCorrectNetwork: false,
+                    address: null,
+                    chainId: null
+                };
+                this.listeners = [];
+            }
+
+            async connectWallet() {
+                if (!window.ethereum) {
+                    throw new Error('MetaMask is not installed');
+                }
+
+                try {
+                    const accounts = await window.ethereum.request({
+                        method: 'eth_requestAccounts'
+                    });
+                    
+                    const chainId = await window.ethereum.request({
+                        method: 'eth_chainId'
+                    });
+                    
+                    this.walletState = {
+                        isConnected: true,
+                        isCorrectNetwork: parseInt(chainId, 16) === 5003,
+                        address: accounts[0],
+                        chainId: parseInt(chainId, 16)
+                    };
+                    
+                    this.notifyListeners();
+                    return this.walletState;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async disconnectWallet() {
+                this.walletState = {
+                    isConnected: false,
+                    isCorrectNetwork: false,
+                    address: null,
+                    chainId: null
+                };
+                this.notifyListeners();
+            }
+
+            async switchToMantleSepolia() {
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: '0x138B' }] // 5003 in hex
+                    });
+                } catch (error) {
+                    if (error.code === 4902) {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: '0x138B',
+                                chainName: 'Mantle Sepolia',
+                                rpcUrls: ['https://rpc.sepolia.mantle.xyz'],
+                                blockExplorerUrls: ['https://explorer.sepolia.mantle.xyz'],
+                                nativeCurrency: {
+                                    name: 'MNT',
+                                    symbol: 'MNT',
+                                    decimals: 18
+                                }
+                            }]
+                        });
+                    }
+                }
+            }
+
+            getWalletState() {
+                return this.walletState;
+            }
+
+            subscribe(listener) {
+                this.listeners.push(listener);
+            }
+
+            notifyListeners() {
+                this.listeners.forEach(listener => listener(this.walletState));
+            }
+
+            async getBalance() {
+                if (!this.walletState.isConnected) return '0';
+                try {
+                    const balance = await window.ethereum.request({
+                        method: 'eth_getBalance',
+                        params: [this.walletState.address, 'latest']
+                    });
+                    return (parseInt(balance, 16) / 1e18).toFixed(4);
+                } catch {
+                    return '0';
+                }
+            }
+        }
+
+        // Initialize SDK
+        const sdk = new MockRWADex();
+        
+        // DOM elements
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const switchNetworkBtn = document.getElementById('switchNetworkBtn');
+        const walletStatus = document.getElementById('walletStatus');
+        const walletAddress = document.getElementById('walletAddress');
+        const networkInfo = document.getElementById('networkInfo');
+        const walletBalance = document.getElementById('walletBalance');
+        const chainId = document.getElementById('chainId');
+        const loadAssetsBtn = document.getElementById('loadAssetsBtn');
+        const previewSwapBtn = document.getElementById('previewSwapBtn');
+        const checkComplianceBtn = document.getElementById('checkComplianceBtn');
+        const messages = document.getElementById('messages');
+
+        // Utility functions
+        function showMessage(message, type = 'info') {
+            const messageEl = document.createElement('div');
+            messageEl.className = type;
+            messageEl.textContent = message;
+            messages.appendChild(messageEl);
+            setTimeout(() => messageEl.remove(), 5000);
+        }
+
+        function formatAddress(address) {
+            if (!address) return 'Not connected';
+            return `${address.slice(0, 6)}...${address.slice(-4)}`;
+        }
+
+        // Update UI based on wallet state
+        function updateUI(state) {
+            // Update status indicator
+            if (state.isConnected && state.isCorrectNetwork) {
+                walletStatus.className = 'status-indicator status-connected';
+                walletStatus.textContent = 'Connected ✓';
+            } else if (state.isConnected && !state.isCorrectNetwork) {
+                walletStatus.className = 'status-indicator status-wrong-network';
+                walletStatus.textContent = 'Wrong Network ⚠️';
+            } else {
+                walletStatus.className = 'status-indicator status-disconnected';
+                walletStatus.textContent = 'Disconnected';
+            }
+
+            // Update wallet info
+            walletAddress.textContent = formatAddress(state.address);
+            chainId.textContent = state.chainId || '-';
+            
+            if (state.chainId === 5003) {
+                networkInfo.textContent = 'Mantle Sepolia';
+            } else if (state.chainId) {
+                networkInfo.textContent = `Chain ${state.chainId}`;
+            } else {
+                networkInfo.textContent = 'Unknown';
+            }
+
+            // Update buttons
+            connectBtn.style.display = state.isConnected ? 'none' : 'inline-block';
+            disconnectBtn.style.display = state.isConnected ? 'inline-block' : 'none';
+            switchNetworkBtn.style.display = (state.isConnected && !state.isCorrectNetwork) ? 'inline-block' : 'none';
+
+            // Update feature buttons
+            const isReady = state.isConnected && state.isCorrectNetwork;
+            loadAssetsBtn.disabled = !isReady;
+            previewSwapBtn.disabled = !isReady;
+            checkComplianceBtn.disabled = !isReady;
+
+            // Update balance
+            if (state.isConnected) {
+                sdk.getBalance().then(balance => {
+                    walletBalance.textContent = `${balance} MNT`;
+                });
+            } else {
+                walletBalance.textContent = '0 MNT';
+            }
+        }
+
+        // Subscribe to wallet changes
+        sdk.subscribe(updateUI);
+
+        // Event listeners
+        connectBtn.addEventListener('click', async () => {
+            try {
+                connectBtn.disabled = true;
+                connectBtn.textContent = 'Connecting...';
+                await sdk.connectWallet();
+                showMessage('Wallet connected successfully!', 'success');
+            } catch (error) {
+                showMessage(`Failed to connect: ${error.message}`, 'error');
+            } finally {
+                connectBtn.disabled = false;
+                connectBtn.textContent = 'Connect MetaMask';
+            }
+        });
+
+        disconnectBtn.addEventListener('click', async () => {
+            await sdk.disconnectWallet();
+            showMessage('Wallet disconnected', 'success');
+        });
+
+        switchNetworkBtn.addEventListener('click', async () => {
+            try {
+                await sdk.switchToMantleSepolia();
+                showMessage('Network switched to Mantle Sepolia!', 'success');
+            } catch (error) {
+                showMessage(`Failed to switch network: ${error.message}`, 'error');
+            }
+        });
+
+        loadAssetsBtn.addEventListener('click', async () => {
+            const assetInfo = document.getElementById('assetInfo');
+            assetInfo.innerHTML = '<div class="loading"></div> Loading assets...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                assetInfo.innerHTML = `
+                    <div class="info-item">
+                        <span class="info-label">Total Assets:</span>
+                        <span class="info-value">5</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Total Value Locked:</span>
+                        <span class="info-value">$1,234,567</span>
+                    </div>
+                    <p>✅ Connected to RWA DEX API successfully!</p>
+                `;
+            }, 1500);
+        });
+
+        previewSwapBtn.addEventListener('click', async () => {
+            const tokenIn = document.getElementById('tokenIn').value;
+            const tokenOut = document.getElementById('tokenOut').value;
+            const amount = document.getElementById('swapAmount').value;
+            const swapPreview = document.getElementById('swapPreview');
+            
+            if (!tokenIn || !tokenOut || !amount) {
+                showMessage('Please fill in all swap fields', 'error');
+                return;
+            }
+            
+            swapPreview.innerHTML = '<div class="loading"></div> Calculating swap...';
+            
+            // Simulate swap preview
+            setTimeout(() => {
+                swapPreview.innerHTML = `
+                    <div class="success">
+                        <h4>Swap Preview</h4>
+                        <div class="info-item">
+                            <span class="info-label">Input:</span>
+                            <span class="info-value">${amount} Token A</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Output:</span>
+                            <span class="info-value">${(parseFloat(amount) * 0.95).toFixed(4)} Token B</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Price Impact:</span>
+                            <span class="info-value">0.1%</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fee:</span>
+                            <span class="info-value">0.3%</span>
+                        </div>
+                    </div>
+                `;
+            }, 1000);
+        });
+
+        checkComplianceBtn.addEventListener('click', async () => {
+            const address = document.getElementById('complianceAddress').value;
+            const complianceResult = document.getElementById('complianceResult');
+            
+            if (!address) {
+                showMessage('Please enter an address to check', 'error');
+                return;
+            }
+            
+            complianceResult.innerHTML = '<div class="loading"></div> Checking compliance...';
+            
+            // Simulate compliance check
+            setTimeout(() => {
+                const isCompliant = Math.random() > 0.5;
+                complianceResult.innerHTML = `
+                    <div class="${isCompliant ? 'success' : 'error'}">
+                        <h4>Compliance Status</h4>
+                        <div class="info-item">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">${formatAddress(address)}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Verified:</span>
+                            <span class="info-value">${isCompliant ? '✅ Yes' : '❌ No'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Jurisdiction:</span>
+                            <span class="info-value">${isCompliant ? 'US' : 'Unknown'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">KYC Level:</span>
+                            <span class="info-value">${isCompliant ? 'Level 2' : 'None'}</span>
+                        </div>
+                    </div>
+                `;
+            }, 1500);
+        });
+
+        // Initialize UI
+        updateUI(sdk.getWalletState());
+
+        // Check for existing connection
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_accounts' })
+                .then(accounts => {
+                    if (accounts.length > 0) {
+                        sdk.connectWallet();
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

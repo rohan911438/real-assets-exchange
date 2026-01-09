@@ -20,7 +20,6 @@
     "dev": "tsc --watch",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
-    "prepare": "npm run build",
     "prepublishOnly": "npm run clean && npm run build",
     "demo": "cd ../demo && python -m http.server 8000"
   },

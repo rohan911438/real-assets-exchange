@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
+import { mantleSepolia } from '@/lib/wagmi';
 
 interface WalletContextType {
   isConnected: boolean;
@@ -17,44 +19,55 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [address, setAddress] = useState<string | null>(null);
+  // Wagmi hooks
+  const { address, isConnected: wagmiConnected, chain } = useAccount();
+  const { disconnect: wagmiDisconnect } = useDisconnect();
+  const { data: balanceData } = useBalance({
+    address,
+    chainId: mantleSepolia.id,
+  });
+
+  // Local state
   const [isKYCVerified, setIsKYCVerified] = useState(false);
   const [networkStatus, setNetworkStatus] = useState<'excellent' | 'good' | 'warning' | 'error' | 'loading'>('loading');
   const [complianceStatus, setComplianceStatus] = useState<'excellent' | 'good' | 'warning' | 'error' | 'loading'>('loading');
   const [demoMode, setDemoMode] = useState(false);
-  const [balance, setBalance] = useState('0.00');
 
-  // Simulate network status updates
+  // Check if connected to correct network
+  const isCorrectNetwork = chain?.id === mantleSepolia.id;
+  const isConnected = wagmiConnected && isCorrectNetwork;
+
+  // Format balance
+  const balance = balanceData 
+    ? `${parseFloat(balanceData.formatted).toFixed(4)} ${balanceData.symbol}`
+    : '0.00 MNT';
+
+  // Update network and compliance status
   useEffect(() => {
-    if (isConnected) {
-      setNetworkStatus('excellent');
-      setComplianceStatus(isKYCVerified ? 'excellent' : 'warning');
-      setBalance('2.45 MNT');
+    if (wagmiConnected) {
+      if (isCorrectNetwork) {
+        setNetworkStatus('excellent');
+        setComplianceStatus(isKYCVerified ? 'excellent' : 'warning');
+      } else {
+        setNetworkStatus('warning'); // Wrong network
+        setComplianceStatus('warning');
+      }
     } else {
       setNetworkStatus('error');
       setComplianceStatus('error');
-      setBalance('0.00');
     }
-  }, [isConnected, isKYCVerified]);
+  }, [wagmiConnected, isCorrectNetwork, isKYCVerified]);
 
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
+    // This will be handled by RainbowKit connect button
+    // Just update status for UX
     setNetworkStatus('loading');
-    // Simulate connection delay for better UX
-    setTimeout(() => {
-      const mockAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f5AAb2';
-      setAddress(mockAddress);
-      setIsConnected(true);
-      setNetworkStatus('excellent');
-      setBalance('2.45 MNT');
-    }, 1000);
   }, []);
 
   const disconnect = useCallback(() => {
-    setAddress(null);
-    setIsConnected(false);
+    wagmiDisconnect();
     setIsKYCVerified(false);
-  }, []);
+  }, [wagmiDisconnect]);
 
   const completeKYC = useCallback(() => {
     setComplianceStatus('loading');
@@ -68,7 +81,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   return (
     <WalletContext.Provider value={{ 
       isConnected, 
-      address, 
+      address: address || null, 
       isKYCVerified, 
       networkStatus, 
       complianceStatus, 

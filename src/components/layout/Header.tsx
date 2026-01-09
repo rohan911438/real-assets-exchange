@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useWallet } from '@/contexts/WalletContext';
 import { Button } from '@/components/ui/button';
+import { WalletConnection } from '@/components/WalletConnection';
 import { truncateAddress } from '@/data/mockData';
 import {
   DropdownMenu,
@@ -24,7 +25,7 @@ const navLinks = [
 ];
 
 export const Header = () => {
-  const { isConnected, address, connect, disconnect } = useWallet();
+  const { isConnected, address, disconnect } = useWallet();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -160,14 +161,13 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button 
-                onClick={connect} 
+              <WalletConnection 
                 variant="gradient" 
+                size="default"
                 className="gap-2 rounded-xl shadow-glow-sm hover:shadow-glow transition-shadow duration-300"
-              >
-                <Wallet className="h-4 w-4" />
-                <span className="hidden sm:inline">Connect Wallet</span>
-              </Button>
+                showIcon={true}
+                fullWidth={false}
+              />
             )}
 
             {/* Mobile Menu Button */}

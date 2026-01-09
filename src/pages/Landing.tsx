@@ -3,6 +3,7 @@ import { useWallet } from '@/contexts/WalletContext';
 import { Layout } from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { WalletConnection } from '@/components/WalletConnection';
 import { mockAssets, platformStats, formatCurrency } from '@/data/mockData';
 import { AssetCard } from '@/components/AssetCard';
 import {
@@ -23,7 +24,7 @@ import {
 import { useEffect } from 'react';
 
 export const Landing = () => {
-  const { isConnected, connect } = useWallet();
+  const { isConnected } = useWallet();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -109,10 +110,7 @@ export const Landing = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in delay-200">
-              <Button onClick={connect} variant="glow" size="xl" className="gap-2 w-full sm:w-auto">
-                <Wallet className="h-5 w-5" />
-                Connect Wallet
-              </Button>
+              <WalletConnection />
               <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto">
                 Learn More
                 <ArrowRight className="h-5 w-5" />
@@ -252,10 +250,7 @@ export const Landing = () => {
             <p className="text-lg text-muted-foreground">
               Join thousands of traders accessing real-world asset yields on the blockchain
             </p>
-            <Button onClick={connect} variant="glow" size="xl" className="gap-2">
-              <Wallet className="h-5 w-5" />
-              Connect Wallet to Begin
-            </Button>
+            <WalletConnection className="gap-2" />
           </div>
         </div>
       </section>

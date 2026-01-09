@@ -3,6 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { WagmiProvider } from 'wagmi';
+import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit';
+import { config } from '@/lib/wagmi';
 import { WalletProvider, useWallet } from "./contexts/WalletContext";
 import Index from "./pages/Index";
 import { Dashboard } from "./pages/Dashboard";
@@ -14,6 +17,9 @@ import { Analytics } from "./pages/Analytics";
 import { Profile } from "./pages/Profile";
 import { DeveloperTools } from "./pages/DeveloperTools";
 import NotFound from "./pages/NotFound";
+
+// Import RainbowKit styles
+import '@rainbow-me/rainbowkit/styles.css';
 
 const queryClient = new QueryClient();
 
@@ -100,17 +106,27 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <WalletProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </WalletProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <WagmiProvider config={config}>
+    <QueryClientProvider client={queryClient}>
+      <RainbowKitProvider 
+        theme={darkTheme({
+          accentColor: '#7c3aed',
+          accentColorForeground: 'white',
+          borderRadius: 'medium',
+        })}
+      >
+        <TooltipProvider>
+          <WalletProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </WalletProvider>
+        </TooltipProvider>
+      </RainbowKitProvider>
+    </QueryClientProvider>
+  </WagmiProvider>
 );
 
 export default App;

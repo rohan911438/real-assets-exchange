@@ -512,6 +512,14 @@ Security posture includes reentrancy protection, input validation, and strict al
 - ZK Compliance Expansion: Proof-based KYC/eligibility and jurisdiction attestations
 - Developer Ecosystem: Tooling, templates, reference integrations
 
+
+## 📽️ Presentation (PPT)
+
+  An investor- and judge-ready 6–8 slide PowerPoint for RWA-DEX is available here:
+
+ (PPT): https://claude.ai/public/artifacts/b503fb6b-630a-4559-9497-e6abd58c228b
+
+
 ## Builder Note
 
 From Rohan Kumar (Solo Builder):
@@ -537,107 +545,3 @@ From Rohan Kumar (Solo Builder):
 Copyright © Rohan Kumar. All rights reserved. License to be finalized prior to mainnet.
 
 ---
-
-For quick starts, see `WALLET_SETUP.md` for Mantle Sepolia connection and `docs/DEPLOYMENT.md` for environment configuration.
-
-- **ComplianceRegistry**
-	- **Contract address:** 0xC71835dC515baD2464E62377E82D8391F891b91D
-	- **Transaction:** 0x346732046ff5368ab40762445af3fffcc349243f5eaf44390fbe765c16b90610 (block 32765686)
-	- **Block hash:** 0x40a1abf3f7279a1da35afc1d16bcb2ee9282e22135b23c5b6ef4df879e8f67e0
-	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
-	- **Roles granted on deployment:** `DEFAULT_ADMIN_ROLE` (bytes32(0)) granted to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56; role `0x0ce23c3e399818cfee81a7ab0880f714e53d7672b08df0fa62f2843416e1ea09` granted to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Notes:** Explorer links are not included because the target network was not specified. To add direct Etherscan/Blockscout links I need the network name (e.g., `Ethereum`, `Polygon`, `BSC`, `Sepolia`, or a custom explorer base URL`).
-
-- **DEXCore**
-	- **Contract address:** 0xde7D5DD34225E93d37427d7de7D1Adb42908E12E
-	- **Transaction:** 0x8d3d5bc509f353b2fe5967bb74356249af5c4bc5553f8f09e2e7749a2e38af23 (block 32765831)
-	- **Block hash:** 0x97f1ec764ec02612bacc5bd26c0a6554de1fbf86b31e6de393eaaad18293e596
-	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Constructor input:** `_usdc` => 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Transaction cost:** 11732935874 gas
-	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
-	- **Events on deployment:** `OwnershipTransferred` from zero address to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56 (deployment owner)
-	- **Notes:** As with `ComplianceRegistry`, explorer links are omitted until the network/explorer is specified. I can add direct links once you confirm the target network.
-
-- **PriceOracle**
-	- **Contract address:** 0x2aB068440E8D2006B9bA2f2995932Cb4fC33e21C
-	- **Transaction:** 0x3a05bca09ce3481c7fd67315668866dfaf625ca5c654bd94afb9632521982ac1 (block 32765993)
-	- **Block hash:** 0xafd6c1aee816208af9963dc1c690c890940a75f7b7d4ecbb473c48730aabc411
-	- **Block number:** 32765993
-	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Transaction cost:** 4935474919 gas
-	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
-	- **Events on deployment:** `OwnershipTransferred` from zero address to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Notes:** Explorer links omitted until network is specified; I can add Etherscan/Blockscout links if you tell me the target network or explorer base URL.
-
-- **YieldDistributor**
-	- **Contract address:** 0xE4FcBb5f73f661363B658a144D0AeF162d5487f2
-	- **Transaction:** 0xed0b4800e4477943126e33a4d3ead594a1efe9c8bcdc573640a27c4d4ea88c90 (block 32766074)
-	- **Block hash:** 0x05f613ae9d36180d6a1ca3bd94340ca5ec559d2139affb1e55592a3a9119c766
-	- **Block number:** 32766074
-	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Constructor input:** `_yieldToken` => 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Transaction cost:** 5273076198 gas
-	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
-	- **Events on deployment:** `OwnershipTransferred` from zero address to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Notes:** Explorer links omitted until network/explorer is specified; tell me the network and I will add direct explorer links and the Sourcify URL.
-
-- **RWAToken**
-	- **Contract address:** 0xd9145CCE52D386f254917e481eB44e9943F39138
-	- **Transaction:** 0xc00581e9e875d2a6c97cf93243506c7b240ee82d9b75c10e0c10ba5e20618c39 (block 1)
-	- **Block hash:** 0x0a569f72e31c55a378df19fd6a2d5084c9c10072322d206ce8877d20323c57c3
-	- **Block number:** 1
-	- **Deployer:** 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
-	- **Constructor inputs:**
-		- `name`: "RWA Real Estate Bond"
-		- `symbol`: "USD"
-		- `totalSupply`: 1000000000000000000000000
-		- `_assetType`: 1
-		- `_totalAssetValue`: 10000000
-		- `_yieldRate`: 600
-		- `_maturityDate`: 1830297600
-		- `_jurisdiction`: "Singapore"
-		- `_complianceRegistry`: 0xC71835dC515baD2464E62377E82D8391F891b91D
-		- `_complianceRequired`: true
-	- **Transaction cost:** 2607945 gas (execution cost 2339751)
-	- **Events on deployment:**
-		- `OwnershipTransferred` from zero address to 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
-		- `Transfer` mint from zero address to 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 (initial supply minted)
-	- **Verification / network:** Deployed on a local/test VM (block 1). No public explorer verification recorded. If this was deployed to a public network, tell me which one and I will add explorer links and verification URLs (Sourcify/Etherscan) where available.
-
-- **LendingProtocol**
-	- **Contract address:** 0x653EE2ea054252c71878e4F382A5810C199F0285
-	- **Transaction:** 0xc1150a9a97d7b57478ff0044cb6caadd1a353c9720b4e9e3c42f266c96015097 (block 32766440)
-	- **Block hash:** 0x62ea187065e493bc722a465cc4ce571e8f0f1c296391097e8a21dd8079f28a14
-	- **Block number:** 32766440
-	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Constructor inputs:**
-		- `_borrowToken`: 0xd9145CCE52D386f254917e481eB44e9943F39138
-		- `_priceOracle`: 0x2aB068440E8D2006B9bA2f2995932Cb4fC33e21C
-	- **Transaction cost:** 9262983249 gas
-	- **Verification:** Sourcify — Verified. Etherscan verification skipped (API key not provided). Blockscout indexing timed out.
-	- **Events on deployment:** `OwnershipTransferred` from zero address to 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Notes:** Explorer links omitted until target network/explorer is specified. Tell me the network and I will add direct Etherscan/Blockscout links and the Sourcify URL.
-
-- **RWAFactory**
-	- **Contract address:** 0x2DdE400Dca7d02F337f6f21124C0Bf108096DD1c
-	- **Transaction:** 0x5e38a3db4e7b1e983b26a7ed5af56832b3544b15b0cb5411de0ea2e415286475 (block 32766550)
-	- **Block number:** 32766550
-	- **Transaction index:** 1
-	- **Deployer:** 0x8b550Ff0BA4F55f070cafA161E44e84AbeDbBc56
-	- **Network:** Mantle Sepolia Testnet (chainId: 5003)
-	- **Verification:** Sourcify — Verified (Exact Match). Verified at 2025-12-30 06:56:32 UTC. Compilation target: `contracts/RWAFactory.sol:RWAFactory` (solc 0.8.31+commit.fd3a2265, EVM version: default).
-	- **Notes:** Etherscan verification skipped (API key not provided). Blockscout indexing timed out. If you want, I can add direct Mantle Sepolia explorer links and the Sourcify view URL — tell me whether to include the Sourcify link or other explorer links.
-
-  ---
-
-  ## 📽️ Presentation (PPT)
-
-  An investor- and judge-ready 6–8 slide PowerPoint for RWA-DEX is available here:
-
-  - Claude artifact (PPT): https://claude.ai/public/artifacts/b503fb6b-630a-4559-9497-e6abd58c228b
-
-  How to use:
-  - Click the link to view or download the PPT.
-  - To embed the PPT into this repository as images or PDF, I can convert it and add the files under the `docs/` folder and update this README with slide previews and speaker notes — tell me to proceed.

@@ -1,14 +1,230 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { 
   CheckCircle, 
   XCircle, 
   AlertTriangle, 
-  ExternalLink,
-  Copy,
-  Check
+  ExternalLink
 } from 'lucide-react';
 
-export interface ToastProps {\n  id: string;\n  type: 'success' | 'error' | 'warning' | 'info' | 'loading';\n  title: string;\n  description?: string;\n  action?: {\n    label: string;\n    onClick: () => void;\n  };\n  duration?: number;\n  onDismiss: (id: string) => void;\n}\n\nconst toastIcons = {\n  success: CheckCircle,\n  error: XCircle,\n  warning: AlertTriangle,\n  info: AlertTriangle,\n  loading: AlertTriangle\n};\n\nconst toastColors = {\n  success: 'border-green-500/20 bg-green-500/10 text-green-600',\n  error: 'border-red-500/20 bg-red-500/10 text-red-600',\n  warning: 'border-yellow-500/20 bg-yellow-500/10 text-yellow-600',\n  info: 'border-blue-500/20 bg-blue-500/10 text-blue-600',\n  loading: 'border-blue-500/20 bg-blue-500/10 text-blue-600'\n};\n\nexport const Toast: React.FC<ToastProps> = ({\n  id,\n  type,\n  title,\n  description,\n  action,\n  duration = 5000,\n  onDismiss\n}) => {\n  const [progress, setProgress] = useState(100);\n  const Icon = toastIcons[type];\n\n  useEffect(() => {\n    if (duration === 0) return; // Don't auto-dismiss if duration is 0\n\n    const interval = setInterval(() => {\n      setProgress(prev => {\n        const newProgress = prev - (100 / (duration / 100));\n        if (newProgress <= 0) {\n          onDismiss(id);\n          return 0;\n        }\n        return newProgress;\n      });\n    }, 100);\n\n    return () => clearInterval(interval);\n  }, [duration, id, onDismiss]);\n\n  return (\n    <motion.div\n      layout\n      initial={{ opacity: 0, y: 50, scale: 0.95 }}\n      animate={{ opacity: 1, y: 0, scale: 1 }}\n      exit={{ opacity: 0, y: 50, scale: 0.95 }}\n      className={`\n        relative w-full max-w-sm rounded-lg border p-4 shadow-lg backdrop-blur-sm\n        ${toastColors[type]}\n      `}\n    >\n      {/* Progress bar for auto-dismiss */}\n      {duration > 0 && (\n        <div className=\"absolute top-0 left-0 right-0 h-1 bg-black/10 rounded-t-lg overflow-hidden\">\n          <motion.div\n            className=\"h-full bg-current opacity-50\"\n            style={{ width: `${progress}%` }}\n            transition={{ duration: 0.1 }}\n          />\n        </div>\n      )}\n\n      <div className=\"flex items-start gap-3\">\n        <Icon className=\"h-5 w-5 flex-shrink-0 mt-0.5\" />\n        \n        <div className=\"flex-1 min-w-0\">\n          <div className=\"font-medium text-sm\">{title}</div>\n          {description && (\n            <div className=\"text-xs text-muted-foreground mt-1\">\n              {description}\n            </div>\n          )}\n          \n          {action && (\n            <div className=\"mt-2\">\n              <Button\n                size=\"sm\"\n                variant=\"outline\"\n                onClick={action.onClick}\n                className=\"h-7 text-xs\"\n              >\n                {action.label}\n                <ExternalLink className=\"h-3 w-3 ml-1\" />\n              </Button>\n            </div>\n          )}\n        </div>\n\n        <button\n          onClick={() => onDismiss(id)}\n          className=\"text-current/60 hover:text-current transition-colors\"\n        >\n          <XCircle className=\"h-4 w-4\" />\n        </button>\n      </div>\n    </motion.div>\n  );\n};\n\nexport interface ToastContextType {\n  addToast: (toast: Omit<ToastProps, 'id' | 'onDismiss'>) => string;\n  removeToast: (id: string) => void;\n  clearAll: () => void;\n}\n\nconst ToastContext = React.createContext<ToastContextType | undefined>(undefined);\n\nexport const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {\n  const [toasts, setToasts] = useState<ToastProps[]>([]);\n\n  const addToast = (toast: Omit<ToastProps, 'id' | 'onDismiss'>): string => {\n    const id = Math.random().toString(36).substring(2, 9);\n    const newToast: ToastProps = {\n      ...toast,\n      id,\n      onDismiss: removeToast\n    };\n    setToasts(prev => [...prev, newToast]);\n    return id;\n  };\n\n  const removeToast = (id: string) => {\n    setToasts(prev => prev.filter(toast => toast.id !== id));\n  };\n\n  const clearAll = () => {\n    setToasts([]);\n  };\n\n  return (\n    <ToastContext.Provider value={{ addToast, removeToast, clearAll }}>\n      {children}\n      \n      {/* Toast Container */}\n      <div className=\"fixed bottom-4 right-4 z-50 space-y-2 max-w-sm\">\n        <AnimatePresence mode=\"popLayout\">\n          {toasts.map(toast => (\n            <Toast key={toast.id} {...toast} />\n          ))}\n        </AnimatePresence>\n      </div>\n    </ToastContext.Provider>\n  );\n};\n\nexport const useToast = (): ToastContextType => {\n  const context = React.useContext(ToastContext);\n  if (!context) {\n    throw new Error('useToast must be used within a ToastProvider');\n  }\n  return context;\n};\n\n// Convenience hooks\nexport const useSuccessToast = () => {\n  const { addToast } = useToast();\n  return (title: string, description?: string, action?: ToastProps['action']) =>\n    addToast({ type: 'success', title, description, action });\n};\n\nexport const useErrorToast = () => {\n  const { addToast } = useToast();\n  return (title: string, description?: string, action?: ToastProps['action']) =>\n    addToast({ type: 'error', title, description, action });\n};\n\n// Transaction toast with hash\nexport const useTxToast = () => {\n  const { addToast } = useToast();\n  const [copied, setCopied] = useState('');\n\n  const copyHash = async (hash: string) => {\n    await navigator.clipboard.writeText(hash);\n    setCopied(hash);\n    setTimeout(() => setCopied(''), 2000);\n  };\n\n  return {\n    pending: (hash: string) => addToast({\n      type: 'loading',\n      title: 'Transaction Pending',\n      description: `Hash: ${hash.slice(0, 10)}...`,\n      action: {\n        label: copied === hash ? 'Copied!' : 'Copy Hash',\n        onClick: () => copyHash(hash)\n      },\n      duration: 0 // Don't auto-dismiss pending transactions\n    }),\n    \n    success: (hash: string, amount?: string, token?: string) => addToast({\n      type: 'success', \n      title: 'Transaction Confirmed',\n      description: amount && token ? `${amount} ${token} transferred successfully` : undefined,\n      action: {\n        label: 'View Details',\n        onClick: () => window.open(`https://explorer.sepolia.mantle.xyz/tx/${hash}`, '_blank')\n      }\n    }),\n    \n    error: (message: string) => addToast({\n      type: 'error',\n      title: 'Transaction Failed', \n      description: message\n    })\n  };\n};
+export interface ToastProps {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info' | 'loading';
+  title: string;
+  description?: string;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+  duration?: number;
+  onDismiss: (id: string) => void;
+}
+
+const toastIcons = {
+  success: CheckCircle,
+  error: XCircle,
+  warning: AlertTriangle,
+  info: AlertTriangle,
+  loading: AlertTriangle
+};
+
+const toastColors = {
+  success: 'border-green-500/20 bg-green-500/10 text-green-600',
+  error: 'border-red-500/20 bg-red-500/10 text-red-600',
+  warning: 'border-yellow-500/20 bg-yellow-500/10 text-yellow-600',
+  info: 'border-blue-500/20 bg-blue-500/10 text-blue-600',
+  loading: 'border-blue-500/20 bg-blue-500/10 text-blue-600'
+};
+
+export const Toast: React.FC<ToastProps> = ({
+  id,
+  type,
+  title,
+  description,
+  action,
+  duration = 5000,
+  onDismiss
+}) => {
+  const [progress, setProgress] = useState(100);
+  const Icon = toastIcons[type];
+
+  useEffect(() => {
+    if (duration === 0) return;
+
+    const interval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev - (100 / (duration / 100));
+        if (newProgress <= 0) {
+          onDismiss(id);
+          return 0;
+        }
+        return newProgress;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [duration, id, onDismiss]);
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 50, scale: 0.95 }}
+      className={`
+        relative w-full max-w-sm rounded-lg border p-4 shadow-lg backdrop-blur-sm
+        ${toastColors[type]}
+      `}
+    >
+      {duration > 0 && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-black/10 rounded-t-lg overflow-hidden">
+          <motion.div
+            className="h-full bg-current opacity-50"
+            style={{ width: `${progress}%` }}
+            transition={{ duration: 0.1 }}
+          />
+        </div>
+      )}
+
+      <div className="flex items-start gap-3">
+        <Icon className="h-5 w-5 flex-shrink-0 mt-0.5" />
+        
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-sm">{title}</div>
+          {description && (
+            <div className="text-xs text-muted-foreground mt-1">
+              {description}
+            </div>
+          )}
+          
+          {action && (
+            <div className="mt-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={action.onClick}
+                className="h-7 text-xs"
+              >
+                {action.label}
+                <ExternalLink className="h-3 w-3 ml-1" />
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={() => onDismiss(id)}
+          className="text-current/60 hover:text-current transition-colors"
+        >
+          <XCircle className="h-4 w-4" />
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
+export interface ToastContextType {
+  addToast: (toast: Omit<ToastProps, 'id' | 'onDismiss'>) => string;
+  removeToast: (id: string) => void;
+  clearAll: () => void;
+}
+
+const ToastContext = React.createContext<ToastContextType | undefined>(undefined);
+
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [toasts, setToasts] = useState<ToastProps[]>([]);
+
+  const addToast = (toast: Omit<ToastProps, 'id' | 'onDismiss'>): string => {
+    const id = Math.random().toString(36).substring(2, 9);
+    const newToast: ToastProps = {
+      ...toast,
+      id,
+      onDismiss: removeToast
+    };
+    setToasts(prev => [...prev, newToast]);
+    return id;
+  };
+
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
+
+  const clearAll = () => {
+    setToasts([]);
+  };
+
+  return (
+    <ToastContext.Provider value={{ addToast, removeToast, clearAll }}>
+      {children}
+      
+      <div className="fixed bottom-4 right-4 z-50 space-y-2 max-w-sm">
+        <AnimatePresence mode="popLayout">
+          {toasts.map(toast => (
+            <Toast key={toast.id} {...toast} />
+          ))}
+        </AnimatePresence>
+      </div>
+    </ToastContext.Provider>
+  );
+};
+
+export const useToast = (): ToastContextType => {
+  const context = React.useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context;
+};
+
+export const useSuccessToast = () => {
+  const { addToast } = useToast();
+  return (title: string, description?: string, action?: ToastProps['action']) =>
+    addToast({ type: 'success', title, description, action });
+};
+
+export const useErrorToast = () => {
+  const { addToast } = useToast();
+  return (title: string, description?: string, action?: ToastProps['action']) =>
+    addToast({ type: 'error', title, description, action });
+};
+
+export const useTxToast = () => {
+  const { addToast } = useToast();
+  const [copied, setCopied] = useState('');
+
+  const copyHash = async (hash: string) => {
+    await navigator.clipboard.writeText(hash);
+    setCopied(hash);
+    setTimeout(() => setCopied(''), 2000);
+  };
+
+  return {
+    pending: (hash: string) => addToast({
+      type: 'loading',
+      title: 'Transaction Pending',
+      description: `Hash: ${hash.slice(0, 10)}...`,
+      action: {
+        label: copied === hash ? 'Copied!' : 'Copy Hash',
+        onClick: () => copyHash(hash)
+      },
+      duration: 0
+    }),
+    
+    success: (hash: string, amount?: string, token?: string) => addToast({
+      type: 'success', 
+      title: 'Transaction Confirmed',
+      description: amount && token ? `${amount} ${token} transferred successfully` : undefined,
+      action: {
+        label: 'View Details',
+        onClick: () => window.open(`https://explorer.sepolia.mantle.xyz/tx/${hash}`, '_blank')
+      }
+    }),
+    
+    error: (message: string) => addToast({
+      type: 'error',
+      title: 'Transaction Failed', 
+      description: message
+    })
+  };
+};

@@ -1,0 +1,29 @@
+# Source files
+src/
+__tests__/
+
+# Configuration files
+tsconfig*.json
+jest.config.js
+.eslintrc*
+
+# Development files
+*.log
+*.lock
+node_modules/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+
+# Demo and docs (already in files array)
+demo/
+docs/

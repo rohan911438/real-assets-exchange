@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Mantle Sepolia](https://img.shields.io/badge/Network-Mantle%20Sepolia-green.svg)](https://docs.mantle.xyz/)
 
+**📦 [View on npm](https://www.npmjs.com/package/@rwa-dex/sdk)** | **📚 [Documentation](https://rwa-dex.com/docs)** | **🌐 [Demo](https://rwa-dex.com/demo)**
+
 The official TypeScript SDK for the RWA DEX platform, enabling seamless integration of Real-World Asset trading on Mantle Sepolia with MetaMask wallet support.
 
 ## ✨ Features
@@ -21,6 +23,8 @@ The official TypeScript SDK for the RWA DEX platform, enabling seamless integrat
 ## 🚀 Quick Start
 
 ### Installation
+
+Install from [npm](https://www.npmjs.com/package/@rwa-dex/sdk):
 
 ```bash
 npm install @rwa-dex/sdk ethers

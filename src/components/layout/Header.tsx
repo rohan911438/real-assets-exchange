@@ -80,6 +80,16 @@ export const Header = () => {
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
+            {/* Mantle Branding */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20"
+            >
+              <div className="h-2 w-2 rounded-full bg-purple-500 animate-pulse shadow-purple-glow" />
+              <span className="text-xs font-medium text-purple-400">⚡ Powered by Mantle</span>
+            </motion.div>
+
             {isConnected && (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -87,7 +97,7 @@ export const Header = () => {
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/20"
               >
                 <div className="h-2 w-2 rounded-full bg-success animate-pulse shadow-success-glow" />
-                <span className="text-xs font-medium text-success">Mantle Testnet</span>
+                <span className="text-xs font-medium text-success">🤖 AI Ready • 🛡️ KYC Verified</span>
               </motion.div>
             )}
 

@@ -12,6 +12,7 @@ import { Liquidity } from "./pages/Liquidity";
 import { Lending } from "./pages/Lending";
 import { Analytics } from "./pages/Analytics";
 import { Profile } from "./pages/Profile";
+import { DeveloperTools } from "./pages/DeveloperTools";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -77,6 +78,12 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Analytics />
           </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/developer"
+        element={
+          <DeveloperTools />
         }
       />
       <Route

@@ -130,9 +130,16 @@ export const Footer = () => {
           <p className="text-sm text-muted-foreground">
             © 2024 RWA-DEX. All rights reserved.
           </p>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>Built on</span>
-            <span className="font-semibold text-foreground">Mantle Network</span>
+          <div className="flex items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-purple-500 animate-pulse" />
+              <span className="text-purple-400 font-medium">⚡ Powered by Mantle</span>
+            </div>
+            <div className="text-muted-foreground">
+              <span className="font-semibold text-foreground">9 REST APIs</span> • 
+              <span className="font-semibold text-foreground"> TypeScript SDK</span> • 
+              <span className="font-semibold text-foreground"> AI Engine</span>
+            </div>
           </div>
         </div>
       </div>

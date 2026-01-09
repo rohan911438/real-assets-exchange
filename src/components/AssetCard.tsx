@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { RWAAsset, formatCurrency, formatPercent } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Sparkles, Building2, Receipt, Landmark, Box, Gem } from 'lucide-react';
+import { TrendingUp, TrendingDown, Sparkles, Building2, Receipt, Landmark, Box, Gem, Shield, Brain, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AssetCardProps {
@@ -42,16 +42,28 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
     <div className="glass-card-hover group overflow-hidden">
       {/* Header with type badge */}
       <div className="p-4 pb-0 flex items-start justify-between">
-        <Badge variant="outline" className={cn('gap-1', typeColors[asset.type])}>
-          <TypeIcon className="h-3 w-3" />
-          {asset.type}
-        </Badge>
-        <div className={cn(
-          'flex items-center gap-1 text-sm font-medium',
-          isPositive ? 'text-success' : 'text-destructive'
-        )}>
-          {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-          {formatPercent(asset.priceChange24h)}
+        <div className="flex flex-col gap-2">
+          <Badge variant="outline" className={cn('gap-1', typeColors[asset.type])}>
+            <TypeIcon className="h-3 w-3" />
+            {asset.type}
+          </Badge>
+          <Badge className="text-xs bg-green-500/10 text-green-600 border-green-500/20 gap-1">
+            <Shield className="h-3 w-3" />
+            RWA Certified
+          </Badge>
+        </div>
+        <div className="text-right">
+          <div className={cn(
+            'flex items-center gap-1 text-sm font-medium mb-1',
+            isPositive ? 'text-success' : 'text-destructive'
+          )}>
+            {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
+            {formatPercent(asset.priceChange24h)}
+          </div>
+          <div className="flex items-center gap-1 text-xs">
+            <Brain className="h-3 w-3 text-blue-500" />
+            <span className="text-blue-600 font-medium">95% AI</span>
+          </div>
         </div>
       </div>
 
@@ -103,12 +115,17 @@ export const AssetCard = ({ asset }: AssetCardProps) => {
           </div>
         </div>
 
-        {/* Action */}
-        <Button asChild variant="gradient" className="w-full">
-          <Link to={`/trade?asset=${asset.id}`}>
-            Trade Now
-          </Link>
-        </Button>
+        {/* Actions */}
+        <div className="flex gap-2">
+          <Button asChild variant="gradient" className="flex-1">
+            <Link to={`/trade?asset=${asset.id}`}>
+              Trade Now
+            </Link>
+          </Button>
+          <Button variant="outline" size="icon" title="Legal Documents">
+            <FileText className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -162,7 +162,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       </motion.div>
 
       {/* Demo Assets for asset type */}
-      {type === 'assets' && config.demoAssets && (
+      {type === 'assets' && 'demoAssets' in config && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -174,7 +174,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
             Popular Assets
           </div>
           <div className="space-y-2">
-            {config.demoAssets.map((asset, index) => (
+            {(config as typeof emptyStateConfig['assets']).demoAssets.map((asset, index) => (
               <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 border border-border/30">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">

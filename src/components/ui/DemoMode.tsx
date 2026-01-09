@@ -1,3 +1,198 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useWallet } from '@/contexts/WalletContext';\nimport { StatusDashboard } from '@/components/ui/StatusIndicator';\nimport { Button } from '@/components/ui/button';\nimport { Badge } from '@/components/ui/badge';\nimport { \n  Zap, \n  Shield, \n  Brain, \n  Activity,\n  Settings,\n  HelpCircle,\n  ExternalLink\n} from 'lucide-react';\n\ninterface DemoConfigProps {\n  onToggleDemo: () => void;\n  demoMode: boolean;\n}\n\nexport const DemoModeConfig: React.FC<DemoConfigProps> = ({ onToggleDemo, demoMode }) => {\n  const { \n    networkStatus, \n    complianceStatus, \n    isConnected \n  } = useWallet();\n\n  if (!isConnected && !demoMode) return null;\n\n  return (\n    <motion.div\n      initial={{ opacity: 0, y: -20 }}\n      animate={{ opacity: 1, y: 0 }}\n      className=\"mb-6\"\n    >\n      <div className=\"glass-card p-4 space-y-4\">\n        {/* Demo Mode Toggle */}\n        <div className=\"flex items-center justify-between\">\n          <div className=\"flex items-center gap-2\">\n            <Settings className=\"h-4 w-4\" />\n            <span className=\"text-sm font-medium\">Demo Configuration</span>\n            {demoMode && (\n              <Badge variant=\"secondary\" className=\"text-xs\">\n                Judge Mode Active\n              </Badge>\n            )}\n          </div>\n          \n          <Button\n            variant={demoMode ? \"default\" : \"outline\"}\n            size=\"sm\"\n            onClick={onToggleDemo}\n            className=\"gap-2\"\n          >\n            {demoMode ? (\n              <>\n                <Activity className=\"h-4 w-4\" />\n                Demo Mode\n              </>\n            ) : (\n              <>\n                <Zap className=\"h-4 w-4\" />\n                Enable Demo\n              </>\n            )}\n          </Button>\n        </div>\n\n        {/* Demo Features */}\n        {demoMode && (\n          <motion.div\n            initial={{ opacity: 0, height: 0 }}\n            animate={{ opacity: 1, height: 'auto' }}\n            className=\"space-y-3 border-t border-border/50 pt-3\"\n          >\n            <div className=\"text-xs text-muted-foreground\">\n              Demo mode optimizations:\n            </div>\n            \n            <div className=\"grid grid-cols-2 gap-2 text-xs\">\n              <div className=\"flex items-center gap-1 text-green-600\">\n                <Shield className=\"h-3 w-3\" />\n                <span>Auto KYC Verified</span>\n              </div>\n              <div className=\"flex items-center gap-1 text-blue-600\">\n                <Brain className=\"h-3 w-3\" />\n                <span>High AI Confidence</span>\n              </div>\n              <div className=\"flex items-center gap-1 text-purple-600\">\n                <Zap className=\"h-3 w-3\" />\n                <span>Fast Animations</span>\n              </div>\n              <div className=\"flex items-center gap-1 text-orange-600\">\n                <Activity className=\"h-3 w-3\" />\n                <span>Mock Data</span>\n              </div>\n            </div>\n            \n            <div className=\"flex items-center gap-2 text-xs\">\n              <HelpCircle className=\"h-3 w-3\" />\n              <span>Perfect for judge demonstrations - no network required</span>\n            </div>\n          </motion.div>\n        )}\n\n        {/* Status Dashboard */}\n        <div className=\"grid grid-cols-2 gap-2\">\n          <StatusDashboard\n            networkStatus={demoMode ? 'excellent' : networkStatus}\n            complianceStatus={demoMode ? 'excellent' : complianceStatus}\n            oracleStatus={demoMode ? 'excellent' : 'good'}\n            aiStatus={demoMode ? 'excellent' : 'good'}\n            aiConfidence={demoMode ? 95 : 78}\n            oracleLastUpdate={demoMode ? '2s ago' : '1m ago'}\n            className=\"text-xs\"\n          />\n        </div>\n        \n        {/* Quick Actions */}\n        {demoMode && (\n          <div className=\"flex gap-2\">\n            <Button variant=\"outline\" size=\"sm\" className=\"text-xs gap-1\">\n              <ExternalLink className=\"h-3 w-3\" />\n              Judge Guide\n            </Button>\n            <Button variant=\"outline\" size=\"sm\" className=\"text-xs gap-1\">\n              <Activity className=\"h-3 w-3\" />\n              Auto Demo\n            </Button>\n          </div>\n        )}\n      </div>\n    </motion.div>\n  );\n};\n\n// Global demo configuration\nexport const DEMO_CONFIG = {\n  // Performance optimizations\n  animationSpeed: 150, // Fast animations for judges\n  autoProgress: true,\n  highlightFeatures: true,\n  \n  // Content optimizations  \n  mockData: {\n    assets: [\n      {\n        name: 'Premium NYC Real Estate',\n        symbol: 'NYC-RE',\n        price: '$125.50',\n        apy: '12.5%',\n        change24h: 8.2,\n        liquidity: '$2.4M',\n        verified: true,\n        type: 'Real Estate'\n      },\n      {\n        name: 'US Treasury Bond',\n        symbol: 'USTB',\n        price: '$98.75',\n        apy: '8.2%', \n        change24h: 0.5,\n        liquidity: '$15.8M',\n        verified: true,\n        type: 'Government Bonds'\n      },\n      {\n        name: 'Gold Commodity Token',\n        symbol: 'GOLD',\n        price: '$1,850.00',\n        apy: '6.8%',\n        change24h: -2.1,\n        liquidity: '$8.9M',\n        verified: true,\n        type: 'Commodities'\n      }\n    ],\n    portfolio: {\n      totalValue: '$12,450.00',\n      totalGain: '+$1,890.50',\n      totalGainPercent: 18.2,\n      yieldEarned: '$245.80'\n    },\n    aiPredictions: {\n      confidence: 95,\n      priceTarget: '$135.20',\n      timeframe: '7 days',\n      risk: 'Low'\n    }\n  },\n  \n  // Judge-specific settings\n  explainMode: true,\n  successBias: true, // Show profitable scenarios\n  realTimeUpdates: false, // Stable demo data\n  failSafes: true // Never show empty/error states\n};
+import { useWallet } from '@/contexts/WalletContext';
+import { StatusDashboard } from '@/components/ui/StatusIndicator';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Zap, 
+  Shield, 
+  Brain, 
+  Activity,
+  Settings,
+  HelpCircle,
+  ExternalLink
+} from 'lucide-react';
+
+interface DemoConfigProps {
+  onToggleDemo: () => void;
+  demoMode: boolean;
+}
+
+export const DemoModeConfig: React.FC<DemoConfigProps> = ({ onToggleDemo, demoMode }) => {
+  const { 
+    networkStatus, 
+    complianceStatus, 
+    isConnected 
+  } = useWallet();
+
+  if (!isConnected && !demoMode) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="mb-6"
+    >
+      <div className="glass-card p-4 space-y-4">
+        {/* Demo Mode Toggle */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Settings className="h-4 w-4" />
+            <span className="text-sm font-medium">Demo Configuration</span>
+            {demoMode && (
+              <Badge variant="secondary" className="text-xs">
+                Judge Mode Active
+              </Badge>
+            )}
+          </div>
+          
+          <Button
+            variant={demoMode ? "default" : "outline"}
+            size="sm"
+            onClick={onToggleDemo}
+            className="gap-2"
+          >
+            {demoMode ? (
+              <>
+                <Activity className="h-4 w-4" />
+                Demo Mode
+              </>
+            ) : (
+              <>
+                <Zap className="h-4 w-4" />
+                Enable Demo
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Demo Features */}
+        {demoMode && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="space-y-3 border-t border-border/50 pt-3"
+          >
+            <div className="text-xs text-muted-foreground">
+              Demo mode optimizations:
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="flex items-center gap-1 text-green-600">
+                <Shield className="h-3 w-3" />
+                <span>Auto KYC Verified</span>
+              </div>
+              <div className="flex items-center gap-1 text-blue-600">
+                <Brain className="h-3 w-3" />
+                <span>High AI Confidence</span>
+              </div>
+              <div className="flex items-center gap-1 text-purple-600">
+                <Zap className="h-3 w-3" />
+                <span>Fast Animations</span>
+              </div>
+              <div className="flex items-center gap-1 text-orange-600">
+                <Activity className="h-3 w-3" />
+                <span>Mock Data</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2 text-xs">
+              <HelpCircle className="h-3 w-3" />
+              <span>Perfect for judge demonstrations - no network required</span>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Status Dashboard */}
+        <div className="grid grid-cols-2 gap-2">
+          <StatusDashboard
+            networkStatus={demoMode ? 'excellent' : networkStatus}
+            complianceStatus={demoMode ? 'excellent' : complianceStatus}
+            oracleStatus={demoMode ? 'excellent' : 'good'}
+            aiStatus={demoMode ? 'excellent' : 'good'}
+            aiConfidence={demoMode ? 95 : 78}
+            oracleLastUpdate={demoMode ? '2s ago' : '1m ago'}
+            className="text-xs"
+          />
+        </div>
+        
+        {/* Quick Actions */}
+        {demoMode && (
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="text-xs gap-1">
+              <ExternalLink className="h-3 w-3" />
+              Judge Guide
+            </Button>
+            <Button variant="outline" size="sm" className="text-xs gap-1">
+              <Activity className="h-3 w-3" />
+              Auto Demo
+            </Button>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+// Global demo configuration
+export const DEMO_CONFIG = {
+  // Performance optimizations
+  animationSpeed: 150, // Fast animations for judges
+  autoProgress: true,
+  highlightFeatures: true,
+  
+  // Content optimizations  
+  mockData: {
+    assets: [
+      {
+        name: 'Premium NYC Real Estate',
+        symbol: 'NYC-RE',
+        price: '$125.50',
+        apy: '12.5%',
+        change24h: 8.2,
+        liquidity: '$2.4M',
+        verified: true,
+        type: 'Real Estate'
+      },
+      {
+        name: 'US Treasury Bond',
+        symbol: 'USTB',
+        price: '$98.75',
+        apy: '8.2%', 
+        change24h: 0.5,
+        liquidity: '$15.8M',
+        verified: true,
+        type: 'Government Bonds'
+      },
+      {
+        name: 'Gold Commodity Token',
+        symbol: 'GOLD',
+        price: '$1,850.00',
+        apy: '6.8%',
+        change24h: -2.1,
+        liquidity: '$8.9M',
+        verified: true,
+        type: 'Commodities'
+      }
+    ],
+    portfolio: {
+      totalValue: '$12,450.00',
+      totalGain: '+$1,890.50',
+      totalGainPercent: 18.2,
+      yieldEarned: '$245.80'
+    },
+    aiPredictions: {
+      confidence: 95,
+      priceTarget: '$135.20',
+      timeframe: '7 days',
+      risk: 'Low'
+    }
+  },
+  
+  // Judge-specific settings
+  explainMode: true,
+  successBias: true, // Show profitable scenarios
+  realTimeUpdates: false, // Stable demo data
+  failSafes: true // Never show empty/error states
+};

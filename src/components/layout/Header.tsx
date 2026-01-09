@@ -162,7 +162,7 @@ export const Header = () => {
               </DropdownMenu>
             ) : (
               <WalletConnection 
-                variant="gradient" 
+                variant="glow" 
                 size="default"
                 className="gap-2 rounded-xl shadow-glow-sm hover:shadow-glow transition-shadow duration-300"
                 showIcon={true}

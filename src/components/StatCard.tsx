@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 interface StatCardProps {
   title: string;
-  value: number;
+  value: number | string;
   prefix?: string;
   suffix?: string;
   decimals?: number;
@@ -33,6 +33,9 @@ export const StatCard = ({
 }: StatCardProps) => {
   const isPositive = changeType === 'positive';
   const isNegative = changeType === 'negative';
+  
+  // Handle both number and string values
+  const isNumeric = typeof value === 'number';
 
   return (
     <motion.div
@@ -45,13 +48,17 @@ export const StatCard = ({
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground font-medium">{title}</p>
           <p className="text-3xl font-bold text-foreground font-display tracking-tight">
-            <AnimatedCounter 
-              value={value} 
-              prefix={prefix} 
-              suffix={suffix}
-              decimals={decimals}
-              duration={2.5}
-            />
+            {isNumeric ? (
+              <AnimatedCounter 
+                value={value as number} 
+                prefix={prefix} 
+                suffix={suffix}
+                decimals={decimals}
+                duration={2.5}
+              />
+            ) : (
+              <span>{value}</span>
+            )}
           </p>
           {change && (
             <div className="flex items-center gap-2">

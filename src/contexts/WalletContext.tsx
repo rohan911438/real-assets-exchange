@@ -38,8 +38,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const isConnected = wagmiConnected && isCorrectNetwork;
 
   // Format balance
+  const formattedValue = balanceData?.value 
+    ? (Number(balanceData.value) / Math.pow(10, balanceData.decimals)).toFixed(4)
+    : '0.0000';
   const balance = balanceData 
-    ? `${parseFloat(balanceData.formatted).toFixed(4)} ${balanceData.symbol}`
+    ? `${formattedValue} ${balanceData.symbol}`
     : '0.00 MNT';
 
   // Update network and compliance status

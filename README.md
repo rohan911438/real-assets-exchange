@@ -519,6 +519,12 @@ Security posture includes reentrancy protection, input validation, and strict al
 
  (PPT): https://claude.ai/public/artifacts/b503fb6b-630a-4559-9497-e6abd58c228b
 
+## 🎥 Video Demo
+
+Watch the complete RWA-DEX demonstration:
+
+📹 **Demo Video**: https://youtu.be/F1uFx022CRY?si=cW5AXK4uMf05AIsN
+
 
 ## Builder Note
 
